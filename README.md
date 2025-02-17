@@ -3,6 +3,7 @@
 Install dependencies after cloning the repo:
 
 ```bash
+cd ./web
 npm install --legacy-peer-deps
 ```
 
