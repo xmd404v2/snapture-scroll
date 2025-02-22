@@ -134,7 +134,7 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
     <div className="flex-1 overflow-y-auto">
       {showSuccessMsg ? (
         <AnimatePresence mode="wait">
-          <SuccessMessage />
+          <SuccessMessage name={formData.name} jobName={formData.jobType === 'Job' ? formData.jobName : undefined} />
         </AnimatePresence>
       ) : (
         <form onSubmit={handleOnSubmit} className="flex flex-col h-full">
