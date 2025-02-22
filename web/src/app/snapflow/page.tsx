@@ -1,25 +1,17 @@
 'use client';
 
-import { useState } from 'react';
 import { Header } from "@/components/Header";
+import { ContractBuilder } from '@/components/ContractBuilder';
 
 const Snapflow = () => {
-  const [modal, setModal] = useState(false);
-
-  const handleModalOpen = () => {
-    setModal(true);
-  };
-
-  const handleModalClose = () => {
-    setModal(false);
-  };
   return (
     <>
     <Header />
       <main className="container mx-auto p-4">
-        <br />
-        <h1>
-            Snapflow - Workflow Builder Goes Here
+        <h1 style={{ textAlign: 'center' }}>
+            Snapflow &nbsp;·&nbsp; Smart Contract Builder
+            <br /><br />
+            <ContractBuilder />
         </h1>
       </main>
     </>

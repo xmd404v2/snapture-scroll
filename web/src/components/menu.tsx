@@ -32,7 +32,7 @@ const MenuBar = () => {
                 Create New<MenubarShortcut>Ctrl + N</MenubarShortcut>
               </MenubarItem>
               <MenubarSeparator />
-              <MenubarItem>
+              <MenubarItem onClick={() => router.push('/projects')}>
                 Manage Existing<MenubarShortcut>Ctrl + M</MenubarShortcut>
               </MenubarItem>
             </MenubarContent>
@@ -40,12 +40,12 @@ const MenuBar = () => {
           <MenubarMenu>
             <MenubarTrigger>Reports</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>
+              <MenubarItem onClick={() => router.push('/reports')}>
                 View All<MenubarShortcut>Ctrl + R</MenubarShortcut>
               </MenubarItem>
-              <MenubarItem>
+              {/* <MenubarItem onClick={() => router.push('/reports/analyze')}> 
                 Analyze Tool<MenubarShortcut>Ctrl + A</MenubarShortcut>
-              </MenubarItem>
+              </MenubarItem> */}
               <MenubarSeparator />
               <MenubarItem>Share</MenubarItem>
               <MenubarSeparator />

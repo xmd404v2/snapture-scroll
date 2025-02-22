@@ -19,7 +19,7 @@ const Reports = () => {
     <main className="container mx-auto p-4">
         <br />
         <h1>
-            Reports Page
+            View Reports
         </h1>
     </main>
     </>
