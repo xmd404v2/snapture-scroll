@@ -19,6 +19,7 @@ interface AddOn {
 
 export type FormItems = {
   name: string;
+  contractAmount: number;
   email: string;
   phone: string;
   plan: "arcade" | "advanced" | "pro";
@@ -28,6 +29,7 @@ export type FormItems = {
 
 const initialValues: FormItems = {
   name: "",
+  contractAmount: 0,
   email: "",
   phone: "",
   plan: "arcade",
@@ -58,7 +60,7 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
   } = useMultiplestepForm(4);
 
   function updateForm(fieldToUpdate: Partial<FormItems>) {
-    const { name, email, phone } = fieldToUpdate;
+    const { name, email, phone, contractAmount } = fieldToUpdate;
 
     if (name && name.trim().length < 3) {
       setErrors((prevState) => ({ ...prevState, name: "Name should be at least 3 characters long" }));

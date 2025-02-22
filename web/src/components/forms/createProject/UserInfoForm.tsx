@@ -10,15 +10,16 @@ type StepProps = FormItems & {
 
 const UserInfoForm = ({
   name,
-  email,
-  phone,
+  // email,
+  // phone,
+  contractAmount,
   errors,
   updateForm,
 }: StepProps) => {
   return (
     <FormWrapper
       title="Personal info"
-      description="Please provide your name, email address, and phone number."
+      description="Please provide your name and intended contract amount."
     >
       <div className="w-full flex flex-col gap-5">
         <div className="flex flex-col gap-2">
@@ -35,7 +36,21 @@ const UserInfoForm = ({
           />
           {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
-        <div className="flex flex-col gap-2">
+        <div>
+          <Label htmlFor="contractAmount">Contract Amount</Label>
+          <Input
+            type="number"
+            name="contractAmount"
+            id="contractAmount"
+            placeholder="e.g. 1000"
+            value={contractAmount}
+            onChange={(e) => updateForm({ contractAmount: Number(e.target.value) })}
+            className="w-full"
+            required
+          />
+          {errors.contractAmount && <p className="text-red-500 text-sm">{errors.contractAmount}</p>}
+        </div>
+        {/* <div className="flex flex-col gap-2">
           <Label htmlFor="email">Email Address</Label>
           <Input
             type="text"
@@ -50,8 +65,8 @@ const UserInfoForm = ({
           {errors.email && (
             <p className="text-red-500 text-sm">{errors.email}</p>
           )}
-        </div>
-        <div className="flex flex-col gap-2">
+        </div> */}
+        {/* <div className="flex flex-col gap-2">
           <Label htmlFor="phone">Phone Number</Label>
           <Input
             type="tel"
@@ -66,7 +81,7 @@ const UserInfoForm = ({
           {errors.phone && (
             <p className="text-red-500 text-sm">{errors.phone}</p>
           )}
-        </div>
+        </div> */}
       </div>
     </FormWrapper>
   );
