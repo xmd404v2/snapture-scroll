@@ -26,7 +26,7 @@ const UserInfoForm = ({
             type="text"
             name="name"
             id="name"
-            placeholder="e.g. Stephen King"
+            placeholder="e.g. Your Name"
             value={name}
             onChange={(e) => updateForm({ name: e.target.value })}
             className="w-full"
@@ -40,8 +40,8 @@ const UserInfoForm = ({
             type="number"
             name="contractAmount"
             id="contractAmount"
-            placeholder="e.g. 1000"
-            value={contractAmount}
+            placeholder="Enter amount in dollars"
+            value={contractAmount || ''}
             onChange={(e) => updateForm({ contractAmount: Number(e.target.value) })}
             className="w-full"
             required

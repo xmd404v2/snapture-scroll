@@ -36,20 +36,6 @@ const SideBar = ({ currentStepIndex, goTo }: NavProps) => {
              Workflow
             </button>
           </li>
-          <li className="flex flex-col items-center md:items-start font-medium">
-            <span className="block text-neutral-500 uppercase text-xs mb-1 md:mb-2">
-              Step 3
-            </span>
-            <button
-              tabIndex={0}
-              onClick={() => goTo(2)}
-              className={`text-xs md:text-base ${
-                currentStepIndex === 3 ? "text-[#6fe79f]" : "text-white"
-              }`}
-            >
-              Summary
-            </button>
-          </li>
         </ul>
       </nav>
     </div>
