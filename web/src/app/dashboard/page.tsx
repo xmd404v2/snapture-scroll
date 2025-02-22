@@ -12,19 +12,6 @@ const Dashboard = () => {
     setIsModalOpen(prev => !prev);
   }, []);
   
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.ctrlKey && event.key.toLowerCase() === "n") {
-        event.preventDefault();
-        toggleModal();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-
   return (
     <>
       <Header />

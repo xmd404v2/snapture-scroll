@@ -7,11 +7,18 @@ import { useEffect } from 'react';
 const Home = () => {
   // const { address, isConnected } = useAccount();
   const router = useRouter();
-
   useEffect(() => {
-  // TODO: Remove lines 13-14 for 15-18
     router.push('/auth/login')
-  });
+    const handleKeyDown = (event: { ctrlKey: any; key: string; preventDefault: () => void; }) => {
+      if (event.ctrlKey && event.key.toLowerCase() === "n") {
+        event.preventDefault();
+        toggleModal();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
     // isConnected && address
     //   ? router.push('/dashboard')
     //   : router.push('/auth/login');
@@ -20,3 +27,7 @@ const Home = () => {
 };
 
 export default Home;
+
+function toggleModal() {
+  throw new Error('Function not implemented.');
+}
