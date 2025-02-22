@@ -146,6 +146,9 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
               {currentStepIndex === 1 && (
                 <WorkFlowForm key="step2" {...formData} updateForm={updateForm} errors={errors} />
               )}
+              {currentStepIndex === 2 && (
+                <FinalStep key="step3" {...formData} goTo={goTo} />
+              )}
             </AnimatePresence>
           </div>
           {/* Navigation Buttons */}

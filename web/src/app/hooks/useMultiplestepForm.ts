@@ -10,7 +10,7 @@ export function useMultiplestepForm(steps: number) {
         if (currentStepIndex < steps - 1) {
             setCurrentStepIndex((i) => i + 1)
         }
-        if (currentStepIndex === 2) {
+        if (currentStepIndex === 1) {
             setShowSuccessMsg(true)
         }
     }
