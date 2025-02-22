@@ -61,10 +61,10 @@ const MenuBar = () => {
               </Avatar>
             </MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>
+              <MenubarItem onClick={() => router.push("/profile")}>
                 View Profile<MenubarShortcut>Ctrl + P</MenubarShortcut>
               </MenubarItem>
-              <MenubarItem>
+              <MenubarItem onClick={() => router.push("/settings")}>
                 Settings<MenubarShortcut>Ctrl + S</MenubarShortcut>
               </MenubarItem>
               <MenubarSeparator />
