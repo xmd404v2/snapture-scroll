@@ -3,18 +3,26 @@
 ## Get started
 
 - Connect your wallet to Gaianet and get the [api key](https://docs.gaianet.ai/getting-started/authentication).
-- Configure the environment and use a Gaia node as model service provider. Replace the `GAIANET_API_KEY` with your api key.
+- Configure the environment and use a Gaia domain/ any LLM as model service provider. Replace the env variables: `GAIANET_API_KEY`/ `OPENAI_API_KEY`, `ETHERSCAN_API_KEY`, `INFURA_API_KEY`
+- Update the `modelProvider` in [agent.character.json](./characters/agent.character.json)
 
   ```bash
   cp .env.example .env
   ```
 
 - Run the following commands to start the agent. (Optional) Reset the SQLite DB at [data/sqlite.db](./data/db.sqlite).
+
   ```bash
   # rm -rf ./data
   pnpm install
   pnpm build
-  pnpm start
+  pnpm start "--character=characters/agent.character.json"
+  ```
+
+- To interact with the agent, try the following commands:
+  ```
+  explain logic in <CONTRACT_ADDRESS> on <CHAIN>
+  get metadata in <CONTRACT_ADDRESS>, for token id <TOKEN_ID> on <CHAIN>
   ```
 
 # Gaianet

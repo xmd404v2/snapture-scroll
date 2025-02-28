@@ -5,10 +5,12 @@ export const character: Character = {
   name: 'Agent',
   // plugins: [],
   // clients: [],
-  modelProvider: ModelProviderName.GAIANET,
+  // modelProvider: ModelProviderName.GAIANET,
+  modelProvider: ModelProviderName.OPENAI,
   settings: {
     secrets: {
       GAIANET_API_KEY: process.env.GAIANET_API_KEY,
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     },
     voice: {
       model: 'en_US-hfc_female-medium',
