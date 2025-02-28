@@ -3,40 +3,29 @@ import { Button } from "@/components/ui/button";
 import { useMultiplestepForm } from "@/app/hooks/useMultiplestepForm";
 import { AnimatePresence, motion } from "framer-motion";
 import UserInfoForm from "@/components/forms/createProject/UserInfoForm";
-import PlanForm from "@/components/forms/createProject/PlanForm";
-import AddonsForm from "@/components/forms/createProject/AddonsForm";
+import WorkFlowForm from "@/components/forms/createProject/WorkFlowForm";
 import FinalStep from "@/components/forms/createProject/FinalStep";
 import SuccessMessage from "@/components/forms/createProject/SuccessMessage";
 import SideBar from "@/components/forms/createProject/SideBar";
 
-interface AddOn {
-  id: number;
-  checked: boolean;
-  title: string;
-  subtitle: string;
-  price: number;
-}
-
 export type FormItems = {
   name: string;
+  contractAmount: number;
+  jobName: string;
+  jobDescription: string;
+  jobType: string;
   email: string;
   phone: string;
-  plan: "arcade" | "advanced" | "pro";
-  yearly: boolean;
-  addOns: AddOn[];
 };
 
 const initialValues: FormItems = {
   name: "",
+  contractAmount: 0,
+  jobName: "",
+  jobDescription: "",
+  jobType: "Job",
   email: "",
   phone: "",
-  plan: "arcade",
-  yearly: false,
-  addOns: [
-    { id: 1, checked: true, title: "Online Service", subtitle: "Access to multiple games", price: 1 },
-    { id: 2, checked: false, title: "Large Storage", subtitle: "Extra 1TB of cloud save", price: 2 },
-    { id: 3, checked: false, title: "Customizable Profile", subtitle: "Custom theme on your profile", price: 2 },
-  ],
 };
 
 interface CreateNewProjectProps {
@@ -55,10 +44,10 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
     isLastStep,
     goTo,
     showSuccessMsg,
-  } = useMultiplestepForm(4);
+  } = useMultiplestepForm(2);
 
   function updateForm(fieldToUpdate: Partial<FormItems>) {
-    const { name, email, phone } = fieldToUpdate;
+    const { name, email, phone, contractAmount, jobName, jobDescription, jobType } = fieldToUpdate;
 
     if (name && name.trim().length < 3) {
       setErrors((prevState) => ({ ...prevState, name: "Name should be at least 3 characters long" }));
@@ -80,7 +69,27 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
       setErrors((prevState) => ({ ...prevState, phone: "" }));
     }
 
-    setFormData({ ...formData, ...fieldToUpdate });
+    if (jobName && jobName.trim().length < 3) {
+      setErrors((prevState) => ({ ...prevState, jobName: "Job name should be at least 3 characters long" }));
+    } else {
+      setErrors((prevState) => ({ ...prevState, jobName: "" }));
+    }
+
+    if (jobDescription && jobDescription.trim().length < 3) {
+      setErrors((prevState) => ({ ...prevState, jobDescription: "Job description should be at least 3 characters long" }));
+    } else {
+      setErrors((prevState) => ({ ...prevState, jobDescription: "" }));
+    }
+
+    // setFormData({ ...formData, ...fieldToUpdate });
+
+     // Add console.log to debug state updates
+  console.log('Updating form with:', fieldToUpdate);
+  setFormData((prevData) => {
+    const newData = { ...prevData, ...fieldToUpdate };
+    console.log('New form data:', newData);
+    return newData;
+  });
   }
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -125,7 +134,7 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
     <div className="flex-1 overflow-y-auto">
       {showSuccessMsg ? (
         <AnimatePresence mode="wait">
-          <SuccessMessage />
+          <SuccessMessage name={formData.name} jobName={formData.jobType === 'Job' ? formData.jobName : undefined} />
         </AnimatePresence>
       ) : (
         <form onSubmit={handleOnSubmit} className="flex flex-col h-full">
@@ -135,13 +144,10 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
                 <UserInfoForm key="step1" {...formData} updateForm={updateForm} errors={errors} />
               )}
               {currentStepIndex === 1 && (
-                <PlanForm key="step2" {...formData} updateForm={updateForm} />
+                <WorkFlowForm key="step2" {...formData} updateForm={updateForm} errors={errors} />
               )}
               {currentStepIndex === 2 && (
-                <AddonsForm key="step3" {...formData} updateForm={updateForm} />
-              )}
-              {currentStepIndex === 3 && (
-                <FinalStep key="step4" {...formData} goTo={goTo} />
+                <FinalStep key="step3" {...formData} goTo={goTo} />
               )}
             </AnimatePresence>
           </div>

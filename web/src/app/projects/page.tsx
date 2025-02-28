@@ -19,7 +19,7 @@ const Projects = () => {
       <main className="container mx-auto p-4">
         <br />
         <h1>
-            Projects Page
+            Manage Projects
         </h1>
       </main>
     </>
