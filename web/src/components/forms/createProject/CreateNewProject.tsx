@@ -111,7 +111,7 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
           onClick={onClose}
         >
           <motion.div
-  className="bg-[#FFFFFF] p-4 rounded-lg shadow-lg w-[95vw] max-h-[95vh] flex flex-col"
+  className="bg-[#FFFFFF] p-4 rounded-lg shadow-lg max-w-[95vw] max-h-[95vh] flex flex-col"
   initial={{ y: 50, opacity: 0 }}
   animate={{ y: 0, opacity: 1 }}
   exit={{ y: -50, opacity: 0 }}
