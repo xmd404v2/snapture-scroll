@@ -131,7 +131,7 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
     {"\u00A0"} {"\u00A0"} {"\u00A0"}
 
     {/* Form Content */}
-    <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 overflow-y-auto [&_label]:text-white">
       {showSuccessMsg ? (
         <AnimatePresence mode="wait">
           <SuccessMessage name={formData.name} jobName={formData.jobType === 'Job' ? formData.jobName : undefined} />
