@@ -111,7 +111,7 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
           onClick={onClose}
         >
           <motion.div
-  className="bg-[#262626] p-4 rounded-lg shadow-lg w-[95vw] max-h-[95vh] flex flex-col"
+  className="bg-[#FFFFFF] p-4 rounded-lg shadow-lg w-[95vw] max-h-[95vh] flex flex-col"
   initial={{ y: 50, opacity: 0 }}
   animate={{ y: 0, opacity: 1 }}
   exit={{ y: -50, opacity: 0 }}
@@ -119,7 +119,7 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
 >
   {/* Header */}
   <div className="flex justify-between items-center mb-4">
-    <h2 className="text-white text-xl font-semibold">Create New Project</h2>
+    <h2 className="text-black text-xl font-semibold">Create New Project</h2>
     <Button onClick={onClose} variant="ghost">✖</Button>
   </div>
 
@@ -131,7 +131,7 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
     {"\u00A0"} {"\u00A0"} {"\u00A0"}
 
     {/* Form Content */}
-    <div className="flex-1 overflow-y-auto [&_label]:text-white">
+    <div className="flex-1 overflow-y-auto [&_label]:text-black">
       {showSuccessMsg ? (
         <AnimatePresence mode="wait">
           <SuccessMessage name={formData.name} jobName={formData.jobType === 'Job' ? formData.jobName : undefined} />
@@ -157,9 +157,9 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
               onClick={previousStep}
               type="button"
               variant="ghost"
-              className={isFirstStep ? "invisible" : "visible p-0 text-neutral-200 hover:text-white"}
+              className={isFirstStep ? "invisible" : "visible p-0 text-black-900 hover:text-black-700"}
             >
-              Go Back
+             ←  Go Back
             </Button>
             <Button type="submit" className="bg-neutral-900 text-white px-4 py-2 rounded-lg">
               {isLastStep ? "Confirm" : "Next Step"}
