@@ -1,33 +1,34 @@
 import React, { useCallback } from 'react';
 import {
-    ReactFlow,
-    MiniMap,
-    Controls,
-    Background,
-    useNodesState,
-    useEdgesState,
-    addEdge,
-  } from '@xyflow/react';
-   
-  import '@xyflow/react/dist/style.css';
-   
-  const initialNodes = [
-    { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
-    { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
-  ];
-  const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
-   
-  export function ContractBuilder() {
+  ReactFlow,
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+
+export function createContractBuilder(initialNodes, initialEdges) {
+  return function ContractBuilder() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-   
+
     const onConnect = useCallback(
-      (params: any) => setEdges((eds) => addEdge(params, eds)),
-      [setEdges],
+      (params) => setEdges((eds) => addEdge(params, eds)),
+      [setEdges]
     );
-   
+
     return (
-      <div style={{ width: '100vw', height: '100vh' }}>
+      <div
+        style={{
+          width: '100%',       // full width of the container
+          height: '300px',     // fixed height for each contract card
+          border: '1px solid #ccc',
+          marginBottom: '1rem', // spacing between contracts
+        }}
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -35,10 +36,9 @@ import {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
         >
-          <Controls />
-          <MiniMap />
           <Background variant="dots" gap={12} size={1} />
         </ReactFlow>
       </div>
     );
-  }
+  };
+}
