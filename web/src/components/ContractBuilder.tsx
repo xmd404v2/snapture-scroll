@@ -12,10 +12,40 @@ import {
   import '@xyflow/react/dist/style.css';
    
   const initialNodes = [
-    { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
-    { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
+    { 
+      id: 'horizontal-1',
+      sourcePosition: 'right',
+      type: 'input',
+      data: { label: 'Job-1' },
+      position: { x: 0, y: 80 }, 
+    },
+    { 
+      id: 'horizontal-2',
+      sourcePosition: 'right',
+      targetPosition: 'left',
+      data: { label: 'Job-2' },
+      position: { x: 250, y: 80 }, 
+    },
+    { 
+      id: 'horizontal-3',
+      sourcePosition: 'right',
+      targetPosition: 'left',
+      data: { label: 'Payment' },
+      position: { x: 500, y: 80 }, 
+    },
   ];
-  const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
+  const initialEdges = [
+    { 
+      id: 'horizontal-e1-2',
+      source: 'horizontal-1',
+      target: 'horizontal-2' 
+    },
+    { 
+      id: 'horizontal-e1-3',
+      source: 'horizontal-2',
+      target: 'horizontal-3' 
+    },
+  ];
    
   export function ContractBuilder() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
