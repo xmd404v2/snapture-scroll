@@ -3,7 +3,6 @@
 import { Header } from "@/components/Header";
 import { createContractBuilder } from '@/components/ContractBuilder';
 
-// Example configuration array – each object represents a contract's initial nodes and edges
 const contractConfigs = [
   {
     id: 'contract1',
@@ -41,38 +40,23 @@ const contractConfigs = [
       { id: 'horizontal-e2-3', source: 'horizontal-2', target: 'horizontal-3' },
     ],
   },
-  // Add more contract configurations as needed...
 ];
 
 const Snapflow = () => {
-  // return (
-  //   <>
-  //   <Header />
-  //     <main className="container mx-auto p-4">
-  //       <h1 style={{ textAlign: 'center' }}>
-  //           Snapflow &nbsp;·&nbsp; Smart Contract Builder
-  //           <br /><br />
-  //           <ContractBuilder />
-  //       </h1>
-  //     </main>
-  //   </>
-  // );
   return (
     <>
-    <Header />
-    <br/>
-    <h1 style={{ textAlign: 'center' }}>
-     Contacts
-    </h1>
-    <br/>
-    {/* <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}> */}
-    <main className="container mx-auto p-4">
-      {contractConfigs.map((config) => {
-        // Create a unique ContractBuilder for each configuration
-        const ContractBuilder = createContractBuilder(config.nodes, config.edges);
-        return <ContractBuilder key={config.id} />;
-      })}
-    </main>
+      <Header />
+      <br/>
+      <h1 style={{ textAlign: 'center' }}>
+      Contacts
+      </h1>
+      <br/>
+      <main className="container mx-auto p-4">
+        {contractConfigs.map((config) => {
+          const ContractBuilder = createContractBuilder(config.nodes, config.edges);
+          return <ContractBuilder key={config.id} />;
+        })}
+      </main>
     </>
   );
 };
