@@ -1,13 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  ReactFlow,
-  MiniMap,
-  Controls,
-  Background,
-  useNodesState,
-  useEdgesState,
-  addEdge,
-} from '@xyflow/react';
+import { ReactFlow, Background, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 export function createContractBuilder(initialNodes, initialEdges) {
@@ -15,16 +7,13 @@ export function createContractBuilder(initialNodes, initialEdges) {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-    const onConnect = useCallback(
-      (params) => setEdges((eds) => addEdge(params, eds)),
-      [setEdges]
-    );
+    const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
     return (
       <div
         style={{
-          width: '100%',       // full width of the container
-          height: '300px',     // fixed height for each contract card
+          width: '100%', // full width of the container
+          height: '60px', // fixed height for each contract card
           border: '1px solid #ccc',
           marginBottom: '1rem', // spacing between contracts
         }}
@@ -35,8 +24,14 @@ export function createContractBuilder(initialNodes, initialEdges) {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          draggable={false}
+          panOnDrag={false}
+          edgesFocusable={false}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          nodesFocusable={false}
         >
-          <Background variant="dots" gap={12} size={1} />
+          <Background bgColor='#fafaf9' gap={12} size={1} />
         </ReactFlow>
       </div>
     );
