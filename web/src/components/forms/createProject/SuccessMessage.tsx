@@ -37,10 +37,10 @@ const SuccessMessage = ({ name, jobName }: { name: string; jobName?: string }) =
         alt="Success Icon"
         className="md:mb-4"
       />
-      <h4 className="text-2xl font-semibold text-white md:text-3xl">
+      <h4 className="text-2xl font-semibold text-neutral-900 md:text-3xl">
         New Project: {jobName || name}
       </h4>
-      <p className="text-sm max-w-md text-neutral-300 md:text-base">
+      <p className="text-sm max-w-md text-neutral-500 md:text-base">
         Your project was created successfully! Now let's build your smart contract in our no-code Snapflow tool.
       </p>
       <div className="flex items-center mt-6">
