@@ -12,7 +12,7 @@ const Home = () => {
     const handleKeyDown = (event: { ctrlKey: any; key: string; preventDefault: () => void; }) => {
       if (event.ctrlKey && event.key.toLowerCase() === "n") {
         event.preventDefault();
-        toggleModal();
+        router.push('/contracts/create');
       }
     };
 
@@ -20,7 +20,7 @@ const Home = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
     // isConnected && address
-    //   ? router.push('/dashboard')
+    //   ? router.push('/contracts')
     //   : router.push('/auth/login');
   // }, [isConnected, address, router]);
   return <></>;

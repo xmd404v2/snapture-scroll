@@ -26,32 +26,34 @@ const MenuBar = () => {
       <nav>
         <Menubar>
           <MenubarMenu>
-            <MenubarTrigger>Contacts</MenubarTrigger>
+            <MenubarTrigger>Contracts</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem onClick={() => router.push('/contracts/create')}>
+              <MenubarItem onClick={toggleModal}>
                 Create New<MenubarShortcut>Ctrl + N</MenubarShortcut>
               </MenubarItem>
               <MenubarSeparator />
-              <MenubarItem onClick={() => router.push('/contracts')}>
+              <MenubarItem onClick={() => router.push('/projects')}>
                 Manage Existing<MenubarShortcut>Ctrl + M</MenubarShortcut>
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
+          {/*
           <MenubarMenu>
             <MenubarTrigger>Reports</MenubarTrigger>
             <MenubarContent>
               <MenubarItem onClick={() => router.push('/reports')}>
                 View All<MenubarShortcut>Ctrl + R</MenubarShortcut>
               </MenubarItem>
-              {/* <MenubarItem onClick={() => router.push('/reports/analyze')}> 
+               <MenubarItem onClick={() => router.push('/reports/analyze')}> 
                 Analyze Tool<MenubarShortcut>Ctrl + A</MenubarShortcut>
-              </MenubarItem> */}
+              </MenubarItem> 
               <MenubarSeparator />
               <MenubarItem>Share</MenubarItem>
               <MenubarSeparator />
               <MenubarItem>Print</MenubarItem>
             </MenubarContent>
           </MenubarMenu>
+          */}
           {"\u00A0"}
           <MenubarMenu>
             <MenubarTrigger>

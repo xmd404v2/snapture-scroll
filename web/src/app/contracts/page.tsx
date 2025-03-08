@@ -14,7 +14,7 @@ const Snapflow = () => {
       <br />
       <div className='container flex justify-between'>
         <h1 className='text-xl font-semibold tracking-tight'>Contracts</h1>
-        <Button size='sm' onClick={() => router.push('/snapflow/create')}>
+        <Button size='sm' onClick={() => router.push('/contracts/create')}>
           Create Contract
         </Button>
       </div>
