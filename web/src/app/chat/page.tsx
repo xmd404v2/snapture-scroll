@@ -29,8 +29,8 @@ const Chat = () => {
       // Convert existing messages to include role
       const formattedMessages = result.map(msg => ({
         ...msg,
-        role: msg.user === 'User' ? 'user' : 'assistant'
-      }));
+        role: msg.user === 'User' ? 'user' : 'assistant',
+      })) as Message[];
       setMessages(formattedMessages);
     };
 
