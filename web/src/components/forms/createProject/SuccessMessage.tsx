@@ -46,7 +46,7 @@ const SuccessMessage = ({ name, jobName }: { name: string; jobName?: string }) =
       <div className="flex items-center mt-6">
         <div className="relative after:pointer-events-none after:absolute after:inset-px after:rounded-[11px] after:shadow-highlight after:shadow-white/10 focus-within:after:shadow-[#77f6aa] after:transition">
           <Button
-            onClick={() => router.push('/snapflow')}
+            onClick={() => router.push('/contracts')}
             className="relative text-neutral-200 bg-neutral-900 border border-black/20 shadow-input shadow-black/10 rounded-xl hover:text-white"
           >
             <Sparkles className="mr-2 h-4 w-4" /> Build w/ Snapflow

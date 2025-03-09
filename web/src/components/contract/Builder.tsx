@@ -62,11 +62,11 @@ export function Builder() {
     const contractEdges = edges.map(({ type, ...rest }) => rest);
 
     addContract({ id: contracts.length + 1, nodes: contractNodes, edges: contractEdges });
-    router.push('/snapflow');
+    router.push('/contracts');
   };
 
   const onBack = () => {
-    router.push('/snapflow');
+    router.push('/contracts');
   };
 
   return (
