@@ -6,217 +6,81 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ISP} from "@ethsign/sign-protocol-evm/src/interfaces/ISP.sol";
 import {ISPHook} from "@ethsign/sign-protocol-evm/src/interfaces/ISPHook.sol";
 import {Attestation} from "@ethsign/sign-protocol-evm/src/models/Attestation.sol";
-import "./INft.sol";
-import "./WhiteList.sol";
+import "./interfaces/ISnaptureNFT.sol";
+import "./interfaces/ISnaptureWorkflow.sol";
+import "./WhitelistMananger.sol";
+// import "hardhat/console.sol";
 
-contract Hook is ISPHook, WhiteList, ReentrancyGuard {
+contract Hook is ISPHook, WhitelistMananger, ReentrancyGuard {
     address public usdc;
     address public nft;
 
-    struct Job {
-        uint jobId;
-        string name;
-        string description;
-        uint amount;
-        string metadata;
-        address minter;
-    }
+    address[] public workflows;
+    mapping(address => uint64) public hasAttested;
 
-    struct Project {
-        uint projectId;
-        string name;
-        string description;
-        uint amount;
-        Job[] jobs;
-        uint8 action; // 0 = terminated, 1 = created
-    }
-
-    mapping(uint => Project) public projects;
-    uint public nextProjectId;
-    mapping(uint => uint) public nextJobId; // project id => next job id
-    mapping(uint => mapping(uint => mapping(address => uint64)))
-        public hasAttested;
-
-    uint public threshold = 2;
+    uint public threshold = 1;
 
     string public debugMessage;
 
-    mapping(uint => mapping(uint => uint)) public attestationCount; // projectId => jobId => count
+    mapping(address => uint) public attestationCount; // workflowAddress => count
 
     error NumberBelowThreshold();
     error UnsupportedOperation();
 
-    event Deposit(address indexed user, uint projectId, uint256 amount);
-    event Withdrawn(
-        address indexed user,
-        uint projectId,
-        uint256 amount,
-        string reason
-    );
-    event ProjectCreated(uint indexed projectId, uint amount);
-    event JobCreated(
-        uint indexed projectId,
-        uint indexed jobId,
-        string name,
-        string description,
-        uint amount,
-        string metadata,
-        address minter
-    );
-    event ProjectTerminated(uint indexed projectId, uint amount);
+    event WorkflowCreated(address indexed workflowAddress);
 
     constructor(address _nft, address _usdc) {
         nft = _nft;
         usdc = _usdc;
     }
 
-    // Add a new project
-    function createProject(string memory _description, uint _amount) public {
-        // Check balance
-        require(
-            IERC20(usdc).balanceOf(msg.sender) >= _amount,
-            "Insufficient balance"
-        );
-        // Check allowance
-        require(
-            IERC20(usdc).allowance(msg.sender, address(this)) >= _amount,
-            "Insufficient allowance"
-        );
-
-        Project storage project = projects[nextProjectId];
-        project.projectId = nextProjectId;
-        project.description = _description;
-        project.amount = _amount;
-        project.action = 1;
-
-        // transfer USDC to contract
-        IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
-
-        // Emit ProjectCreated event
-        emit ProjectCreated(nextProjectId, _amount);
-
-        nextProjectId++;
+    // Add a new workflow
+    function createWorkflow(address _workflowAddress) public {
+        workflows.push(_workflowAddress);
+        emit WorkflowCreated(_workflowAddress);
     }
 
-    function terminateProject(uint projectId) external onlyOwner {
-        require(projectId < nextProjectId, "Project does not exist.");
-        Project storage project = projects[projectId];
-        project.action = 0;
-
-        // transfer remaining USDC to owner
-        IERC20(usdc).transfer(msg.sender, project.amount);
-
-        emit ProjectTerminated(projectId, project.amount);
+    function getAllWorkflows() public view returns (address[] memory) {
+        return workflows;
     }
 
-    // Add a job to a project
-    function createJob(
-        uint _projectId,
-        string memory _jobName,
-        string memory _jobDescription,
-        uint _jobAmount,
-        string memory _jobMetadata
-    ) public {
-        require(_projectId < nextProjectId, "Project does not exist.");
-        Job memory newJob = Job({
-            jobId: nextJobId[_projectId],
-            name: _jobName,
-            description: _jobDescription,
-            amount: _jobAmount,
-            metadata: _jobMetadata,
-            minter: msg.sender
-        });
-        projects[_projectId].jobs.push(newJob);
-
-        // Emit JobCreated event
-        emit JobCreated(
-            _projectId,
-            nextJobId[_projectId],
-            _jobName,
-            _jobDescription,
-            _jobAmount,
-            _jobMetadata,
-            msg.sender
-        );
-
-        nextJobId[_projectId]++;
-    }
-
-    // deposit USDC
-    function deposit(uint projectId, uint amount) external payable {
-        // deposit USDC
-        IERC20(usdc).transferFrom(msg.sender, address(this), amount);
-
-        emit Deposit(msg.sender, projectId, amount);
-    }
-
-    // Get a specific project by its ID
-    function getProject(
-        uint _projectId
-    )
-        public
-        view
-        returns (uint, string memory, string memory, uint, Job[] memory)
-    {
-        require(_projectId < nextProjectId, "Project does not exist.");
-        Project storage project = projects[_projectId];
-        return (
-            project.projectId,
-            project.name,
-            project.description,
-            project.amount,
-            project.jobs
-        );
-    }
-
-    // Get a specific job within a project
-    function getJob(
-        uint _projectId,
-        uint _jobId
-    )
-        public
-        view
-        returns (uint, string memory, string memory, uint, string memory)
-    {
-        require(_projectId < nextProjectId, "Project does not exist.");
-        Project storage project = projects[_projectId];
-        require(_jobId < project.jobs.length, "Job does not exist.");
-        Job storage job = project.jobs[_jobId];
-        return (job.jobId, job.name, job.description, job.amount, job.metadata);
-    }
-
-    function _finalizeJob(uint projectId, uint jobId) public {
+    function _finalizeJob(address _workflowAddress, string memory _tokenUri) public onlyOwner {
+        // console.log("finalizeJob:", _workflowAddress);
         debugMessage = "finalizeJob";
-        require(projectId < nextProjectId, "Project does not exist.");
-        Project storage project = projects[projectId];
-        require(jobId < project.jobs.length, "Job does not exist.");
-        Job storage job = project.jobs[jobId];
+        require(workflowExists(_workflowAddress) == true, "Workflow does not exist.");
 
-        debugMessage = "finalizeJob: mint NFT";
-        // mint NFT
-        string memory tokenUri = project.jobs[jobId].metadata;
-        INft(nft).mint(job.minter, projectId, jobId, tokenUri);
-        debugMessage = "finalizeJob: transfer USDC";
-        // release fund
-        IERC20(usdc).transfer(project.jobs[jobId].minter, project.amount);
+        // console.log("update workflow:", _tokenUri);
+        debugMessage = "finalizeJob: update workflow";
+        ISnaptureWorkflow(_workflowAddress).updateProgress();
+        // console.log("_workflowAddress:", _workflowAddress);
+
+        // check progress
+        uint256 stepsCount = ISnaptureWorkflow(_workflowAddress).getStepsCount();
+        uint256 progressCount = ISnaptureWorkflow(_workflowAddress).getProgressCount();
+        // last progress is Payment
+        if (progressCount == (stepsCount - 1)) {
+            // mint NFT to owner
+            ISnaptureNFT(nft).mint(ISnaptureWorkflow(_workflowAddress).getOwner(), _tokenUri);
+            // finalize payment
+            ISnaptureWorkflow(_workflowAddress).finalizePayment();
+        }
 
         debugMessage = "finalizeJob: emit event";
         // remove job from project
         // delete project.jobs[jobId];
     }
 
-    function emergencyWithdraw(
-        uint projectId,
-        uint amount,
-        string calldata reason
-    ) external onlyOwner {
-        IERC20(usdc).transfer(msg.sender, amount);
-
-        emit Withdrawn(msg.sender, projectId, amount, reason);
+    function workflowExists(address _workflowAddress) public view returns (bool) {
+        for (uint i = 0; i < workflows.length; i++) {
+            if (workflows[i] == _workflowAddress) {
+                return true; // Address found
+            }
+        }
+        return false; // Address not found
     }
 
-    function setThreshold(uint256 _threshold) external onlyOwner {
-        threshold = _threshold;
+    function setThreshold(uint256 threshold_) external onlyOwner {
+        threshold = threshold_;
     }
 
     function _checkThreshold(uint256 number) internal view returns (bool) {
@@ -235,22 +99,22 @@ contract Hook is ISPHook, WhiteList, ReentrancyGuard {
             attestationId
         );
 
-        (uint projectId, uint jobId) = abi.decode(
+        (address workflowAddress, string memory tokenUri) = abi.decode(
             attestation.data,
-            (uint256, uint256)
-        ); // projectId and jobId
+            (address, string)
+        ); // workflowAddress, tokenUri
 
         // Check if the signer has already attested
         require(
-            hasAttested[projectId][jobId][attestation.attester] == 0,
+            hasAttested[workflowAddress] == 0,
             "Signer has already attested"
         );
         // Mark the signer as having attested
-        hasAttested[projectId][jobId][attestation.attester] = attestationId;
+        hasAttested[workflowAddress] = attestationId;
 
-        attestationCount[projectId][jobId]++;
-        if (_checkThreshold(attestationCount[projectId][jobId])) {
-            _finalizeJob(projectId, jobId);
+        attestationCount[workflowAddress]++;
+        if (_checkThreshold(attestationCount[workflowAddress])) {
+            _finalizeJob(workflowAddress, tokenUri);
         }
     }
 
