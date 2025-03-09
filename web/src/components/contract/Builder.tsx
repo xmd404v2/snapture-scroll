@@ -1,15 +1,19 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useAccount } from 'wagmi';
 import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge, BackgroundVariant, Connection, Position } from '@xyflow/react';
 import type { Node, Edge } from '@xyflow/react';
+
+import { useEthersSigner } from '@/app/hooks/useEthersSigner';
 import { useContractStore } from '@/store/ContractStore';
 import { Button } from '@/components/ui/button';
 import Job from './Job';
 import Payment from './Payment';
 import CustomEdge from './CustomEdge';
 import Menu from './Menu';
+import { Workflow__factory } from '../../../typechain';
 
 import '@xyflow/react/dist/style.css';
 
@@ -31,11 +35,15 @@ const initialNodes: Node[] = [
 const initialEdges: Edge[] = [];
 
 export function Builder() {
+  const { address, chainId } = useAccount();
+  const signer = useEthersSigner();
   const router = useRouter();
   const contracts = useContractStore((state) => state.contracts);
   const addContract = useContractStore((state) => state.addContract);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges);
+  const [amount, setAmount] = useState<number>(0);
+  const [workflowName, setWorkflowName] = useState<string>('');
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -67,6 +75,35 @@ export function Builder() {
 
   const onBack = () => {
     router.push('/contracts');
+  };
+
+  const handleCreate = async () => {
+    if (!signer?.address) return;
+
+    const args = {
+      workflowName: workflowName,
+      payee: signer.address,
+      workflowAmount: BigInt(amount),
+      usdcAddress: process.env.NEXT_PUBLIC_USDC_CONTRACT_ADDRESS ?? '',
+      nftAddress: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS ?? '',
+      hookAddress: process.env.NEXT_PUBLIC_HOOK_CONTRACT_ADDRESS ?? '',
+    };
+
+    try {
+      const workflowFactory = new Workflow__factory(signer);
+      const deployedContract = await workflowFactory.deploy(
+        args.workflowName,
+        args.payee,
+        args.workflowAmount,
+        args.usdcAddress,
+        args.nftAddress,
+        args.hookAddress
+      );
+      const contractAddress = await deployedContract.getAddress();
+      console.log('Contract deployed at:', contractAddress);
+    } catch (error) {
+      console.error('Error deploying contract:', error);
+    }
   };
 
   return (

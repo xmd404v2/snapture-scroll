@@ -1,10 +1,16 @@
 ## Getting Started
 
-- To start the Eliza agent, follow the instructions provided in [README.md](./agent/README.md)
-- Start the web app.
+- To start the Eliza agent, follow the instructions provided in [README.md](./agent/README.md).
+- Copy the example .env file to create your local configuration.
 
   ```bash
   cd ./web
+  cp .env.example .env
+  ```
+
+- Start the web app.
+
+  ```bash
   npm install --legacy-peer-deps
   npm run dev
   ```
