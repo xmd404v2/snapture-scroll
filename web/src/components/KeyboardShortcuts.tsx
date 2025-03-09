@@ -27,11 +27,11 @@ export function KeyboardShortcuts() {
         const key = event.key.toLowerCase();
         if (ctrlKey && key === "n") {
             event.preventDefault();
-            toggleModal();
+            router.push('/contracts/create');
         }
         if (ctrlKey && key === "m") {
             event.preventDefault();
-            router.push('/projects');
+            router.push('/contracts');  
         }
         if (ctrlKey && key === "r") {
             event.preventDefault();

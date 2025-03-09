@@ -16,7 +16,7 @@ export function LoginForm({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Optionally, add authentication logic here.
-    router.push("/dashboard");
+    router.push("/contracts");
   };
 
   return (
