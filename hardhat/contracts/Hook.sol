@@ -9,7 +9,7 @@ import {Attestation} from "@ethsign/sign-protocol-evm/src/models/Attestation.sol
 import "./interfaces/ISnaptureNFT.sol";
 import "./interfaces/ISnaptureWorkflow.sol";
 import "./WhitelistMananger.sol";
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 contract Hook is ISPHook, WhitelistMananger, ReentrancyGuard {
     address public usdc;
@@ -45,13 +45,25 @@ contract Hook is ISPHook, WhitelistMananger, ReentrancyGuard {
     }
 
     function _finalizeJob(address _workflowAddress, string memory _tokenUri) public onlyOwner {
-        console.log("finalizeJob:", _workflowAddress);
+        // console.log("finalizeJob:", _workflowAddress);
         debugMessage = "finalizeJob";
         require(workflowExists(_workflowAddress) == true, "Workflow does not exist.");
 
-        console.log("update workflow:", _tokenUri);
+        // console.log("update workflow:", _tokenUri);
         debugMessage = "finalizeJob: update workflow";
-        ISnaptureWorkflow(_workflowAddress).updateProgress(_tokenUri);
+        ISnaptureWorkflow(_workflowAddress).updateProgress();
+        // console.log("_workflowAddress:", _workflowAddress);
+
+        // check progress
+        uint256 stepsCount = ISnaptureWorkflow(_workflowAddress).getStepsCount();
+        uint256 progressCount = ISnaptureWorkflow(_workflowAddress).getProgressCount();
+        // last progress is Payment
+        if (progressCount == (stepsCount - 1)) {
+            // mint NFT to owner
+            ISnaptureNFT(nft).mint(ISnaptureWorkflow(_workflowAddress).getOwner(), _tokenUri);
+            // finalize payment
+            ISnaptureWorkflow(_workflowAddress).finalizePayment();
+        }
 
         debugMessage = "finalizeJob: emit event";
         // remove job from project
@@ -82,23 +94,15 @@ contract Hook is ISPHook, WhitelistMananger, ReentrancyGuard {
         uint64 attestationId, // attestationId
         bytes calldata // extraData
     ) external payable {
-        console.log("Attester:", attester);
-        console.log("Attestation ID:", attestationId);
-        
         _checkAttesterWhitelistStatus(attester);
-        console.log("_msgSender", _msgSender());
         Attestation memory attestation = ISP(_msgSender()).getAttestation(
             attestationId
         );
-        console.log("attestation error");
 
         (address workflowAddress, string memory tokenUri) = abi.decode(
             attestation.data,
             (address, string)
         ); // workflowAddress, tokenUri
-
-        console.log("Workflow Address:", workflowAddress);
-        console.log("Token URI:", tokenUri);
 
         // Check if the signer has already attested
         require(

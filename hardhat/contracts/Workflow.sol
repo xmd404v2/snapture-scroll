@@ -104,21 +104,22 @@ contract Workflow is ReentrancyGuard, Ownable {
         emit ReleaseFund(payee, workflowAmount);
     }
 
-    function updateProgress(string memory tokenUri) public nonReentrant {
+    function updateProgress() public nonReentrant {
         require(msg.sender == hookAddress, "Only hook can update progress");
         require(progress.length < steps.length, "Progress index out of bounds");
         progress.push(block.timestamp);
+    }
 
-        // last progress is Payment
-        if (progress.length == (steps.length - 1)) {
-            // mint NFT to owner
-            ISnaptureNFT(nftAddress).mint(owner(), tokenUri);
-            // release fund to payee
-            IERC20(usdcAddress).transfer(payee, workflowAmount);
-            workflowAmount = 0;
-            progress.push(block.timestamp);
-            emit PaymentTriggered();
-        }
+    function finalizePayment() public nonReentrant {
+        require(msg.sender == hookAddress, "Only hook can finalize payment");
+        require(progress.length == steps.length -1, "Payment must be last step in progress");
+        
+        // release fund to payee
+        uint256 amountInWei = uint256(workflowAmount) * 10**6;
+        IERC20(usdcAddress).transfer(payee, amountInWei);
+        workflowAmount = 0;
+        progress.push(block.timestamp);
+        emit PaymentTriggered();
     }
     
     function getAllSteps() public view returns (Step[] memory) {
@@ -160,5 +161,9 @@ contract Workflow is ReentrancyGuard, Ownable {
 
     function getHookAddress() public view returns (address) {
         return hookAddress;
+    }
+
+    function getOwner() public view returns (address) {
+        return owner();
     }
 } 
