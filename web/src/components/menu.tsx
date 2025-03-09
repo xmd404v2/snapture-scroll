@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '@/components/ui/menubar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import ConnectButton from '@/components/ConnectButton';
 import CreateNewProject from './forms/createProject/CreateNewProject';
 
 const MenuBar = () => {
@@ -29,21 +30,18 @@ const MenuBar = () => {
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
-          <MenubarMenu>
+          {/* <MenubarMenu>
             <MenubarTrigger>Reports</MenubarTrigger>
             <MenubarContent>
               <MenubarItem onClick={() => router.push('/reports')}>
                 View All<MenubarShortcut>Ctrl + R</MenubarShortcut>
               </MenubarItem>
-              {/* <MenubarItem onClick={() => router.push('/reports/analyze')}> 
-                Analyze Tool<MenubarShortcut>Ctrl + A</MenubarShortcut>
-              </MenubarItem> */}
               <MenubarSeparator />
               <MenubarItem>Share</MenubarItem>
               <MenubarSeparator />
               <MenubarItem>Print</MenubarItem>
             </MenubarContent>
-          </MenubarMenu>
+          </MenubarMenu> */}
           <MenubarMenu>
             <MenubarTrigger>Agent</MenubarTrigger>
             <MenubarContent>
@@ -53,7 +51,7 @@ const MenuBar = () => {
             </MenubarContent>
           </MenubarMenu>
           {'\u00A0'}
-          <MenubarMenu>
+          {/* <MenubarMenu>
             <MenubarTrigger>
               <Avatar>
                 <AvatarImage src='https://github.com/shadcn.png' />
@@ -70,7 +68,8 @@ const MenuBar = () => {
               <MenubarSeparator />
               <MenubarItem onClick={() => router.push('/auth/login')}>Logout</MenubarItem>
             </MenubarContent>
-          </MenubarMenu>
+          </MenubarMenu> */}
+          <ConnectButton />
         </Menubar>
       </nav>
 
