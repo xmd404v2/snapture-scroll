@@ -1,6 +1,6 @@
 ## Getting Started
 
-Install dependencies after cloning the repo:
+Install dependencies
 
 ```bash
 cd ./web
@@ -9,8 +9,11 @@ npm install --legacy-peer-deps
 
 Then run the development server:
 
-```bash
-npm run dev
-```
+- To start the Eliza agent, follow the instructions provided in [README.md](./agent/README.md)
+- Start the web app.
+  ```bash
+  cd ./web
+  npm run dev
+  ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Once the server is running, open your browser and visit [http://localhost:3001](http://localhost:3001)
