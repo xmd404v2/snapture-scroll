@@ -1,12 +1,8 @@
 // components/Header.tsx
 'use client';
 import Image from 'next/image';
-
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '@/components/ui/menubar';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
 import Link from 'next/link';
+
 import { MenuBar } from '@/components/menu';
 
 export function Header() {
