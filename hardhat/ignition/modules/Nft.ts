@@ -1,8 +1,8 @@
 import { buildModule } from '@nomicfoundation/hardhat-ignition/modules';
 
-export default buildModule('Nft', (m) => {
+export default buildModule('NFT', (m) => {
   const args: any[] = [];
-  const Nft = m.contract('Nft', args, {});
+  const NFT = m.contract('NFT', args, {});
 
-  return { Nft };
+  return { NFT };
 });

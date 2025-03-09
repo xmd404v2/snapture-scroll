@@ -15,11 +15,14 @@ contract NFT is ERC721URIStorage, Ownable {
     }
 
     modifier allowOwnerOrHook() {
-        require(msg.sender == hookAddress || msg.sender == owner(), "Only the hook contract or owner can call this function");
+        require(
+            msg.sender == hookAddress || msg.sender == owner(),
+            "Only the hook contract or owner can call this function"
+        );
         _;
     }
 
-    function mint(address to, string memory tokenUri) public allowOwnerOrHook {  
+    function mint(address to, string memory tokenUri) public allowOwnerOrHook {
         //request address of this tokenId is not exist
         require(_ownerOf(nextNFTId) == address(0), "tokenId already exists");
 
