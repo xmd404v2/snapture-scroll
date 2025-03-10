@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components//ui/card'
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import CreateNewProject from '@/components/forms/createProject/CreateNewProject';
 
 export type JobNode = Node<{
   id: string;
@@ -102,17 +101,6 @@ export default function Job(props: NodeProps<JobNode>) {
       </Card>
       <CustomHandle type='source' position={Position.Right} />
       <CustomHandle type='target' position={Position.Left} />
-
-      <CreateNewProject 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        mode="job"
-        initialData={{ 
-          jobName: props.data.name || '',
-          jobDescription: props.data.description || '',
-          jobType: 'Job'
-        }}
-      />
     </>
   );
 }

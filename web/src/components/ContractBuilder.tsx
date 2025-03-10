@@ -1,7 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { ReactFlow, Background, Node, Edge, NodeMouseHandler } from '@xyflow/react';
-import CreateNewProject from '@/components/forms/createProject/CreateNewProject';
-import { FormItems } from '@/components/forms/createProject/CreateNewProject';
 
 import '@xyflow/react/dist/style.css';
 
@@ -109,14 +107,6 @@ export function createContractBuilder(nodes: Node[], edges: Edge[], disableModal
         >
           <Background color="#aaa" gap={16} />
         </ReactFlow>
-        
-        {/* Project Modal */}
-        <CreateNewProject 
-          isOpen={isModalOpen} 
-          onClose={closeModal}
-          mode={getModalMode()}
-          initialData={getInitialData()}
-        />
       </div>
     );
   };
