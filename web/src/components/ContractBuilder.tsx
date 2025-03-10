@@ -3,19 +3,16 @@ import { ReactFlow, Background, Node, Edge, NodeMouseHandler } from '@xyflow/rea
 
 import '@xyflow/react/dist/style.css';
 
-export function createContractBuilder(nodes: Node[], edges: Edge[], disableModal: boolean = false) {
+export function createContractBuilder(nodes: Node[], edges: Edge[]) {
   return function ContractBuilder() {
     const [selectedNode, setSelectedNode] = useState<Node | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
-      // If modal is disabled, do nothing on click
-      if (disableModal) return;
-      
       event.preventDefault();
       setSelectedNode(node);
       setIsModalOpen(true);
-    }, [disableModal]);
+    }, []);
 
     const closeModal = () => {
       setIsModalOpen(false);
@@ -107,6 +104,7 @@ export function createContractBuilder(nodes: Node[], edges: Edge[], disableModal
         >
           <Background color="#aaa" gap={16} />
         </ReactFlow>
+      
       </div>
     );
   };
