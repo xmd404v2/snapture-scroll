@@ -5,9 +5,10 @@ import { FormItems } from "@/components/forms/createProject/CreateNewProject";
 
 type StepProps = FormItems & {
   goTo: (index: number) => void;
+  readOnly?: boolean;
 };
 
-const FinalStep = ({ goTo }: StepProps) => {
+const FinalStep = ({ goTo, readOnly = false }: StepProps) => {
   return (
     <FormWrapper
       title="Workflow Visualizer"

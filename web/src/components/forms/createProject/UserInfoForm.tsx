@@ -6,6 +6,7 @@ import { FormItems } from "@/components/forms/createProject/CreateNewProject";
 type StepProps = FormItems & {
   updateForm: (fieldToUpdate: Partial<FormItems>) => void;
   errors: Partial<FormItems>;
+  readOnly?: boolean;
 };
 
 const UserInfoForm = ({
@@ -13,6 +14,7 @@ const UserInfoForm = ({
   contractAmount,
   errors,
   updateForm,
+  readOnly = false,
 }: StepProps) => {
   return (
     <FormWrapper
@@ -31,6 +33,8 @@ const UserInfoForm = ({
             onChange={(e) => updateForm({ name: e.target.value })}
             className="w-full"
             required
+            disabled={readOnly}
+            readOnly={readOnly}
           />
           {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
@@ -45,6 +49,8 @@ const UserInfoForm = ({
             onChange={(e) => updateForm({ contractAmount: Number(e.target.value) })}
             className="w-full"
             required
+            disabled={readOnly}
+            readOnly={readOnly}
           />
           {errors.contractAmount && <p className="text-red-500 text-sm">{errors.contractAmount}</p>}
         </div>

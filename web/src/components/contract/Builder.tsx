@@ -10,6 +10,7 @@ import Job from './Job';
 import Payment from './Payment';
 import CustomEdge from './CustomEdge';
 import Menu from './Menu';
+import { createContractBuilder } from '@/components/ContractBuilder';
 
 import '@xyflow/react/dist/style.css';
 

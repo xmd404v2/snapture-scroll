@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useMultiplestepForm } from "@/app/hooks/useMultiplestepForm";
 import { AnimatePresence, motion } from "framer-motion";
@@ -31,10 +31,17 @@ const initialValues: FormItems = {
 interface CreateNewProjectProps {
   isOpen: boolean;
   onClose: () => void;
+  mode?: "job" | "payment";
+  initialData?: Partial<FormItems>;
 }
 
-export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectProps) {
-  const [formData, setFormData] = useState(initialValues);
+export default function CreateNewProject({ 
+  isOpen, 
+  onClose, 
+  mode, 
+  initialData = {} 
+}: CreateNewProjectProps) {
+  const [formData, setFormData] = useState({ ...initialValues, ...initialData });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const {
     previousStep,
@@ -45,6 +52,16 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
     goTo,
     showSuccessMsg,
   } = useMultiplestepForm(2);
+
+  useEffect(() => {
+    if (isOpen && mode) {
+      if (mode === "job") {
+        goTo(1);
+      } else if (mode === "payment") {
+        goTo(2);
+      }
+    }
+  }, [isOpen, mode, goTo]);
 
   function updateForm(fieldToUpdate: Partial<FormItems>) {
     const { name, email, phone, contractAmount, jobName, jobDescription, jobType } = fieldToUpdate;
@@ -81,15 +98,12 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
       setErrors((prevState) => ({ ...prevState, jobDescription: "" }));
     }
 
-    // setFormData({ ...formData, ...fieldToUpdate });
-
-     // Add console.log to debug state updates
-  console.log('Updating form with:', fieldToUpdate);
-  setFormData((prevData) => {
-    const newData = { ...prevData, ...fieldToUpdate };
-    console.log('New form data:', newData);
-    return newData;
-  });
+    console.log('Updating form with:', fieldToUpdate);
+    setFormData((prevData) => {
+      const newData = { ...prevData, ...fieldToUpdate };
+      console.log('New form data:', newData);
+      return newData;
+    });
   }
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -99,6 +113,8 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
     }
     nextStep();
   };
+
+  const isReadOnly = mode === "payment";
 
   return (
     <AnimatePresence>
@@ -111,66 +127,93 @@ export default function CreateNewProject({ isOpen, onClose }: CreateNewProjectPr
           onClick={onClose}
         >
           <motion.div
-  className="bg-[#FFFFFF] p-4 rounded-lg shadow-lg max-w-[95vw] max-h-[95vh] flex flex-col"
-  initial={{ y: 50, opacity: 0 }}
-  animate={{ y: 0, opacity: 1 }}
-  exit={{ y: -50, opacity: 0 }}
-  onClick={(e) => e.stopPropagation()}
->
-  {/* Header */}
-  <div className="flex justify-between items-center mb-4">
-    <h2 className="text-black text-xl font-semibold">Create New Project</h2>
-    <Button onClick={onClose} variant="ghost">✖</Button>
-  </div>
+            className="bg-[#FFFFFF] p-4 rounded-lg shadow-lg max-w-[95vw] max-h-[95vh] flex flex-col"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -50, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-black text-xl font-semibold">
+                {mode === "job" ? "Create New Job" : 
+                 mode === "payment" ? "Payment Details" : 
+                 "Create New Project"}
+              </h2>
+              <Button onClick={onClose} variant="ghost">✖</Button>
+            </div>
 
-  {/* Content Area: Sidebar & Form */}
-  <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
-    {/* Sidebar: displays full width on mobile (top), and on left on desktop */}
-    {!showSuccessMsg && <SideBar currentStepIndex={currentStepIndex} goTo={goTo} />}
+            {/* Content Area: Sidebar & Form */}
+            <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+              {/* Only show sidebar if not in a specific mode */}
+              {!showSuccessMsg && !mode && <SideBar currentStepIndex={currentStepIndex} goTo={goTo} />}
 
-    {"\u00A0"} {"\u00A0"} {"\u00A0"}
+              {"\u00A0"} {"\u00A0"} {"\u00A0"}
 
-    {/* Form Content */}
-    <div className="flex-1 overflow-y-auto [&_label]:text-black">
-      {showSuccessMsg ? (
-        <AnimatePresence mode="wait">
-          <SuccessMessage name={formData.name} jobName={formData.jobType === 'Job' ? formData.jobName : undefined} />
-        </AnimatePresence>
-      ) : (
-        <form onSubmit={handleOnSubmit} className="flex flex-col h-full">
-          <div className="flex-1">
-            <AnimatePresence mode="wait">
-              {currentStepIndex === 0 && (
-                <UserInfoForm key="step1" {...formData} updateForm={updateForm} errors={errors} />
-              )}
-              {currentStepIndex === 1 && (
-                <WorkFlowForm key="step2" {...formData} updateForm={updateForm} errors={errors} />
-              )}
-              {currentStepIndex === 2 && (
-                <FinalStep key="step3" {...formData} goTo={goTo} />
-              )}
-            </AnimatePresence>
-          </div>
-          {/* Navigation Buttons */}
-          <div className="w-full flex justify-between mt-4">
-            <Button
-              onClick={previousStep}
-              type="button"
-              variant="ghost"
-              className={isFirstStep ? "invisible" : "visible p-0 text-black-900 hover:text-black-700"}
-            >
-             ←  Go Back
-            </Button>
-            <Button type="submit" className="bg-neutral-900 text-white px-4 py-2 rounded-lg">
-              {isLastStep ? "Confirm" : "Next Step"}
-            </Button>
-          </div>
-        </form>
-      )}
-    </div>
-  </div>
-</motion.div>
-
+              {/* Form Content */}
+              <div className="flex-1 overflow-y-auto [&_label]:text-black">
+                {showSuccessMsg ? (
+                  <AnimatePresence mode="wait">
+                    <SuccessMessage name={formData.name} jobName={formData.jobType === 'Job' ? formData.jobName : undefined} />
+                  </AnimatePresence>
+                ) : (
+                  <form onSubmit={handleOnSubmit} className="flex flex-col h-full">
+                    <div className="flex-1">
+                      <AnimatePresence mode="wait">
+                        {currentStepIndex === 0 && (
+                          <UserInfoForm 
+                            key="step1" 
+                            {...formData} 
+                            updateForm={updateForm} 
+                            errors={errors}
+                            readOnly={isReadOnly} 
+                          />
+                        )}
+                        {currentStepIndex === 1 && (
+                          <WorkFlowForm 
+                            key="step2" 
+                            {...formData} 
+                            updateForm={updateForm} 
+                            errors={errors}
+                            readOnly={isReadOnly} 
+                          />
+                        )}
+                        {currentStepIndex === 2 && (
+                          <FinalStep 
+                            key="step3" 
+                            {...formData} 
+                            goTo={goTo}
+                            readOnly={isReadOnly} 
+                          />
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    {/* Navigation Buttons */}
+                    <div className="w-full flex justify-between mt-4">
+                      <Button
+                        onClick={previousStep}
+                        type="button"
+                        variant="ghost"
+                        className={isFirstStep || isReadOnly ? "invisible" : "visible p-0 text-black-900 hover:text-black-700"}
+                      >
+                       ←  Go Back
+                      </Button>
+                      {!isReadOnly && (
+                        <Button type="submit" className="bg-neutral-900 text-white px-4 py-2 rounded-lg">
+                          {isLastStep ? "Confirm" : "Next Step"}
+                        </Button>
+                      )}
+                      {isReadOnly && (
+                        <Button onClick={onClose} className="bg-neutral-900 text-white px-4 py-2 rounded-lg">
+                          Close
+                        </Button>
+                      )}
+                    </div>
+                  </form>
+                )}
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
