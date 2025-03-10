@@ -1,19 +1,12 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
+import { useRouter } from 'next/navigation';
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '@/components/ui/menubar';
+import ConnectButton from '@/components/ConnectButton';
 
 const MenuBar = () => {
   const router = useRouter();
+
   return (
     <>
       <nav>
@@ -30,6 +23,16 @@ const MenuBar = () => {
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Agent</MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem onClick={() => router.push('/chat')}>
+                Chat<MenubarShortcut>Ctrl + C</MenubarShortcut>
+              </MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+          {'\u00A0'}
+          <ConnectButton />
         </Menubar>
       </nav>
     </>

@@ -32,17 +32,9 @@ export function KeyboardShortcuts() {
             event.preventDefault();
             router.push('/contracts');  
         }
-        if (ctrlKey && key === "r") {
+        if (ctrlKey && key === "c") {
             event.preventDefault();
-            router.push('/reports');
-        }
-        if (ctrlKey && key === "p") {
-            event.preventDefault();
-            router.push('/profile');
-        }
-        if (ctrlKey && key === "s") {
-            event.preventDefault();
-            router.push('/settings');
+            router.push('/chat');
         }
     };
 
