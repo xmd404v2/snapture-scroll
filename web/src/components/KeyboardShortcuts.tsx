@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import CreateNewProject from "@/components/forms/createProject/CreateNewProject";
 import { useRouter } from "next/navigation";
 
 export function KeyboardShortcuts() {
@@ -52,9 +51,9 @@ export function KeyboardShortcuts() {
   }, [toggleModal, isAuthPage]);
 
   // Don't render the modal if we're on an auth page
-  if (isAuthPage) return null;
+  // if (isAuthPage) return null;
 
-  return isModalOpen ? (
-    <CreateNewProject isOpen={isModalOpen} onClose={toggleModal} />
-  ) : null;
+  // return isModalOpen ? (
+  //   <CreateNewProject isOpen={isModalOpen} onClose={toggleModal} />
+  // ) : null;
 }
