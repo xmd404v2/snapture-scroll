@@ -10,6 +10,7 @@ import Job from './Job';
 import Payment from './Payment';
 import CustomEdge from './CustomEdge';
 import Menu from './Menu';
+import { createContractBuilder } from '@/components/ContractBuilder';
 
 import '@xyflow/react/dist/style.css';
 
@@ -70,35 +71,41 @@ export function Builder() {
   };
 
   return (
-    <div className='container mx-auto space-y-4 p-4'>
+    <>
+      <br />
       <div className='container flex justify-between'>
-        <h1>New Contract</h1>
+        <h1 className='text-xl font-semibold tracking-tight'>
+          New Contract
+        </h1>
         <div className='space-x-2'>
           <Button size='sm' variant='outline' onClick={onBack}>
             Back
           </Button>
+          
           <Button size='sm' onClick={onCreate}>
             Create
           </Button>
         </div>
       </div>
 
-      <div style={{ width: '100%', height: '70vh' }}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          defaultViewport={{ x: 100, y: 100, zoom: 0.7 }}
-        >
-          <Controls />
-          <MiniMap />
-          <Background bgColor='#fafaf9' variant={BackgroundVariant.Dots} gap={12} size={1} />
-        </ReactFlow>
+      <div className='container mx-auto space-y-4 p-4'>
+        <div style={{ width: '100%', height: '70vh' }}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            defaultViewport={{ x: 100, y: 100, zoom: 0.7 }}
+          >
+            <Controls />
+            <MiniMap />
+            <Background bgColor='#fafaf9' variant={BackgroundVariant.Dots} gap={12} size={1} />
+          </ReactFlow>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

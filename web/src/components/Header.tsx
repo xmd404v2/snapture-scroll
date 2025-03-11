@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { MenuBar } from '@/components/menu';
+import { MenuBar } from '@/components/HeaderMenu';
 
 export function Header() {
   return (

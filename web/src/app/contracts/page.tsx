@@ -18,13 +18,21 @@ const Snapflow = () => {
           Create Contract
         </Button>
       </div>
-
       <br />
       <main className='container mx-auto p-4'>
-        {contracts.map((contract) => {
-          const ContractBuilder = createContractBuilder(contract.nodes, contract.edges);
-          return <ContractBuilder key={contract.id} />;
-        })}
+        {contracts.length > 0 ? (
+          contracts.map((contract, index) => (
+            <div key={contract.id} className="mb-6">
+              <h2 className="text-lg font-medium mb-2 text-gray-700">Contract {index + 1}</h2>
+              {createContractBuilder(contract.nodes, contract.edges)()}
+            </div>
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center min-h-[50vh]">
+            <h1 className="text-2xl font-semibold text-gray-700">No contracts found</h1>
+            <p className="mt-2 text-gray-500">Create a new contract to get started</p>
+          </div>
+        )}
       </main>
     </>
   );

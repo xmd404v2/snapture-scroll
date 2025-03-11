@@ -1,20 +1,12 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from 'next/navigation';
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '@/components/ui/menubar';
+import ConnectButton from '@/components/ConnectButton';
 
 const MenuBar = () => {
   const router = useRouter();
+
   return (
     <>
       <nav>
@@ -31,27 +23,16 @@ const MenuBar = () => {
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
-          {"\u00A0"}
           <MenubarMenu>
-            <MenubarTrigger>
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </MenubarTrigger>
+            <MenubarTrigger>Agent</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem onClick={() => router.push("/profile")}>
-                View Profile<MenubarShortcut>Ctrl + P</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem onClick={() => router.push("/settings")}>
-                Settings<MenubarShortcut>Ctrl + S</MenubarShortcut>
-              </MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem onClick={() => router.push("/auth/login")}>
-                Logout
+              <MenubarItem onClick={() => router.push('/chat')}>
+                Chat<MenubarShortcut>Ctrl + C</MenubarShortcut>
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
+          {'\u00A0'}
+          <ConnectButton />
         </Menubar>
       </nav>
     </>
