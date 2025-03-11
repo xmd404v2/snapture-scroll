@@ -27,7 +27,7 @@ const MenuBar = () => {
             <MenubarTrigger>Agent</MenubarTrigger>
             <MenubarContent>
               <MenubarItem onClick={() => router.push('/chat')}>
-                Chat<MenubarShortcut>Ctrl + C</MenubarShortcut>
+                Chat<MenubarShortcut>Ctrl + A</MenubarShortcut>
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
