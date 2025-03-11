@@ -22,20 +22,20 @@ export function KeyboardShortcuts() {
     if (isAuthPage) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-        const ctrlKey = event.ctrlKey;
-        const key = event.key.toLowerCase();
-        if (ctrlKey && key === "n") {
-            event.preventDefault();
-            router.push('/contracts/create');
-        }
-        if (ctrlKey && key === "m") {
-            event.preventDefault();
-            router.push('/contracts');  
-        }
-        if (ctrlKey && key === "c") {
-            event.preventDefault();
-            router.push('/chat');
-        }
+      const ctrlKey = event.ctrlKey;
+      const key = event.key.toLowerCase();
+      if (ctrlKey && key === "n") {
+          event.preventDefault();
+          router.push('/contracts/create');
+      }
+      if (ctrlKey && key === "m") {
+          event.preventDefault();
+          router.push('/contracts');  
+      }
+      if (ctrlKey && key === "c") {
+          event.preventDefault();
+          router.push('/chat');
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
