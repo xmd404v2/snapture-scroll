@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { NodeProps, Node, Position, useReactFlow } from '@xyflow/react';
 import { usePathname } from 'next/navigation';
 import CustomHandle from './CustomHandle';
@@ -15,7 +15,6 @@ export type JobNode = Node<{
 
 export default function Job(props: NodeProps<JobNode>) {
   const { setNodes } = useReactFlow();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const pathname = usePathname();
   
   // Disable modal on the create page
@@ -55,17 +54,9 @@ export default function Job(props: NodeProps<JobNode>) {
     );
   };
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Only open modal if not on create page
-    if (isCreatePage) return;
-    
-    e.stopPropagation();
-    setIsModalOpen(true);
-  };
-
   return (
     <>
-      <Card className='shadow-lg cursor-pointer' onClick={handleCardClick}>
+      <Card className='shadow-lg cursor-pointer'>
         <CardHeader>
           <CardTitle>Job</CardTitle>
         </CardHeader>

@@ -1,75 +1,42 @@
 import React, { useState, useCallback } from 'react';
 import { ReactFlow, Background, Node, Edge, NodeMouseHandler } from '@xyflow/react';
+import JobModal from './modals/JobModal';
+import PaymentModal from './modals/PaymentModal';
 
 import '@xyflow/react/dist/style.css';
 
 export function createContractBuilder(nodes: Node[], edges: Edge[]) {
   return function ContractBuilder() {
     const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isJobModalOpen, setIsJobModalOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
     const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
       event.preventDefault();
       setSelectedNode(node);
-      setIsModalOpen(true);
+      
+      // Determine which modal to open based on node type
+      const nodeType = (node.type || '').toLowerCase();
+      const nodeData = node.data || {};
+      
+      // Check if it's a payment node first
+      if (
+        nodeType.includes('payment') || 
+        (typeof nodeData.amount !== 'undefined') ||
+        (nodeData.type && String(nodeData.type).toLowerCase().includes('payment'))
+      ) {
+        setIsPaymentModalOpen(true);
+      } 
+      // If not a payment node, treat as job node
+      else {
+        setIsJobModalOpen(true);
+      }
     }, []);
 
-    const closeModal = () => {
-      setIsModalOpen(false);
+    const closeModals = () => {
+      setIsJobModalOpen(false);
+      setIsPaymentModalOpen(false);
       setSelectedNode(null);
-    };
-
-    // Determine the mode based on the node type or data
-    const getModalMode = () => {
-      if (!selectedNode) return undefined;
-      
-      // Check node type or data properties to determine if it's a job or payment
-      const nodeType = selectedNode.type || '';
-      const nodeData = selectedNode.data || {};
-      
-      if (nodeType.toLowerCase().includes('job')) {
-        return 'job';
-      } else if (nodeType.toLowerCase().includes('payment')) {
-        return 'payment';
-      }
-      
-      // Check if data has a type property
-      const dataType = typeof nodeData.type === 'string' ? nodeData.type : '';
-      if (dataType.toLowerCase().includes('job')) {
-        return 'job';
-      } else if (dataType.toLowerCase().includes('payment')) {
-        return 'payment';
-      }
-      
-      // Fall back to checking if node has payment-specific data
-      if (nodeData.amount !== undefined) {
-        return 'payment';
-      }
-      
-      // Default to job if nothing matches
-      return 'job';
-    };
-
-    // Get initial data for the modal
-    const getInitialData = (): Partial<FormItems> => {
-      if (!selectedNode || !selectedNode.data) return {};
-      
-      const nodeData = selectedNode.data;
-      
-      if (getModalMode() === 'job') {
-        return {
-          jobName: String(nodeData.name || nodeData.label || ''),
-          jobDescription: String(nodeData.description || ''),
-          jobType: 'Job'
-        };
-      } else if (getModalMode() === 'payment') {
-        return {
-          contractAmount: Number(nodeData.amount || 0),
-          jobType: 'Payment'
-        };
-      }
-      
-      return {};
     };
 
     return (
@@ -104,7 +71,27 @@ export function createContractBuilder(nodes: Node[], edges: Edge[]) {
         >
           <Background color="#aaa" gap={16} />
         </ReactFlow>
-      
+        
+        {/* Job Modal */}
+        <JobModal 
+          isOpen={isJobModalOpen} 
+          onClose={closeModals}
+          data={{
+            name: String(selectedNode?.data?.name || selectedNode?.data?.label || ''),
+            description: String(selectedNode?.data?.description || ''),
+            id: selectedNode?.id ? String(selectedNode?.id) : undefined
+          }}
+        />
+        
+        {/* Payment Modal */}
+        <PaymentModal 
+          isOpen={isPaymentModalOpen} 
+          onClose={closeModals}
+          data={{
+            amount: Number(selectedNode?.data?.amount || 0),
+            id: selectedNode?.id ? String(selectedNode?.id) : undefined
+          }}
+        />
       </div>
     );
   };
