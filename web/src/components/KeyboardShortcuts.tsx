@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import CreateNewProject from "@/components/forms/createProject/CreateNewProject";
 import { useRouter } from "next/navigation";
 
 export function KeyboardShortcuts() {
@@ -23,28 +22,20 @@ export function KeyboardShortcuts() {
     if (isAuthPage) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-        const ctrlKey = event.ctrlKey;
-        const key = event.key.toLowerCase();
-        if (ctrlKey && key === "n") {
-            event.preventDefault();
-            router.push('/contracts/create');
-        }
-        if (ctrlKey && key === "m") {
-            event.preventDefault();
-            router.push('/contracts');  
-        }
-        if (ctrlKey && key === "r") {
-            event.preventDefault();
-            router.push('/reports');
-        }
-        if (ctrlKey && key === "p") {
-            event.preventDefault();
-            router.push('/profile');
-        }
-        if (ctrlKey && key === "s") {
-            event.preventDefault();
-            router.push('/settings');
-        }
+      const ctrlKey = event.ctrlKey;
+      const key = event.key.toLowerCase();
+      if (ctrlKey && key === "n") {
+          event.preventDefault();
+          router.push('/contracts/create');
+      }
+      if (ctrlKey && key === "m") {
+          event.preventDefault();
+          router.push('/contracts');  
+      }
+      if (ctrlKey && key === "c") {
+          event.preventDefault();
+          router.push('/chat');
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -52,9 +43,9 @@ export function KeyboardShortcuts() {
   }, [toggleModal, isAuthPage]);
 
   // Don't render the modal if we're on an auth page
-  if (isAuthPage) return null;
+  // if (isAuthPage) return null;
 
-  return isModalOpen ? (
-    <CreateNewProject isOpen={isModalOpen} onClose={toggleModal} />
-  ) : null;
+  // return isModalOpen ? (
+  //   <CreateNewProject isOpen={isModalOpen} onClose={toggleModal} />
+  // ) : null;
 }
