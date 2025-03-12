@@ -1,5 +1,6 @@
 import '@nomicfoundation/hardhat-toolbox';
 import '@nomicfoundation/hardhat-verify';
+import '@nomicfoundation/hardhat-ignition-ethers';
 import { HardhatUserConfig } from 'hardhat/config';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -18,6 +19,12 @@ const config: HardhatUserConfig = {
     sepolia: {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
       accounts: [process.env.DEPLOYER_PK ?? ''],
+      ignition: {
+        maxFeePerGasLimit: 800_000_000_000n, // 800 gwei
+        maxPriorityFeePerGas: 2_000_000_000n, // 2 gwei
+        gasPrice: 50_000_000_000n, // 50 gwei
+        disableFeeBumping: false,
+      },
     },
   },
   etherscan: {

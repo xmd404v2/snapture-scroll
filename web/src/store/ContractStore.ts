@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import type { Edge, Node } from '@xyflow/react';
+import { Position, type Edge, type Node } from '@xyflow/react';
 
-type Contract = {
-  id: number;
+export type Contract = {
+  id: string;
   nodes: Node[];
   edges: Edge[];
 };
@@ -10,7 +10,7 @@ type Contract = {
 interface ContractState {
   contracts: Contract[];
   addContract: (contract: Contract) => void;
-  removeContract: (contractId: number) => void;
+  removeContract: (contractId: string) => void;
   clearContracts: () => void;
 }
 

@@ -1,11 +1,14 @@
 import React, { useState, useCallback } from 'react';
-import { ReactFlow, Background, Node, Edge, NodeMouseHandler } from '@xyflow/react';
+import { ReactFlow, Background, Node, NodeMouseHandler } from '@xyflow/react';
+import { Contract } from '@/store/ContractStore';
 import JobModal from './modals/JobModal';
 import PaymentModal from './modals/PaymentModal';
 
 import '@xyflow/react/dist/style.css';
 
-export function createContractBuilder(nodes: Node[], edges: Edge[]) {
+export function createContractBuilder(contract: Contract) {
+  const { id: workflowAddress, nodes, edges } = contract;
+
   return function ContractBuilder() {
     const [selectedNode, setSelectedNode] = useState<Node | null>(null);
     const [isJobModalOpen, setIsJobModalOpen] = useState(false);
@@ -14,19 +17,19 @@ export function createContractBuilder(nodes: Node[], edges: Edge[]) {
     const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
       event.preventDefault();
       setSelectedNode(node);
-      
+
       // Determine which modal to open based on node type
       const nodeType = (node.type || '').toLowerCase();
       const nodeData = node.data || {};
-      
+
       // Check if it's a payment node first
       if (
-        nodeType.includes('payment') || 
-        (typeof nodeData.amount !== 'undefined') ||
+        nodeType.includes('payment') ||
+        typeof nodeData.amount !== 'undefined' ||
         (nodeData.type && String(nodeData.type).toLowerCase().includes('payment'))
       ) {
         setIsPaymentModalOpen(true);
-      } 
+      }
       // If not a payment node, treat as job node
       else {
         setIsJobModalOpen(true);
@@ -47,7 +50,7 @@ export function createContractBuilder(nodes: Node[], edges: Edge[]) {
           backgroundColor: '#fafaf9',
           marginBottom: '1rem', // spacing between contracts
           borderRadius: '8px',
-          overflow: 'hidden'
+          overflow: 'hidden',
         }}
       >
         <ReactFlow
@@ -66,30 +69,32 @@ export function createContractBuilder(nodes: Node[], edges: Edge[]) {
           minZoom={0.5}
           maxZoom={2}
           proOptions={{ hideAttribution: true }}
-          className="react-flow-container"
+          className='react-flow-container'
           style={{ background: '#fafaf9' }}
         >
-          <Background color="#aaa" gap={16} />
+          <Background color='#aaa' gap={16} />
         </ReactFlow>
-        
+
         {/* Job Modal */}
-        <JobModal 
-          isOpen={isJobModalOpen} 
+        <JobModal
+          isOpen={isJobModalOpen}
           onClose={closeModals}
           data={{
             name: String(selectedNode?.data?.name || selectedNode?.data?.label || ''),
             description: String(selectedNode?.data?.description || ''),
-            id: selectedNode?.id ? String(selectedNode?.id) : undefined
+            id: selectedNode?.id ? String(selectedNode?.id) : undefined,
+            workflowAddress,
           }}
         />
-        
+
         {/* Payment Modal */}
-        <PaymentModal 
-          isOpen={isPaymentModalOpen} 
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
           onClose={closeModals}
           data={{
             amount: Number(selectedNode?.data?.amount || 0),
-            id: selectedNode?.id ? String(selectedNode?.id) : undefined
+            id: selectedNode?.id ? String(selectedNode?.id) : undefined,
+            workflowAddress,
           }}
         />
       </div>
