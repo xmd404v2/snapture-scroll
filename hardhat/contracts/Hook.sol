@@ -44,10 +44,16 @@ contract Hook is ISPHook, WhitelistMananger, ReentrancyGuard {
         return workflows;
     }
 
-    function _finalizeJob(address _workflowAddress, string memory _tokenUri) public onlyOwner {
+    function _finalizeJob(
+        address _workflowAddress,
+        string memory _tokenUri
+    ) public {
         // console.log("finalizeJob:", _workflowAddress);
         debugMessage = "finalizeJob";
-        require(workflowExists(_workflowAddress) == true, "Workflow does not exist.");
+        require(
+            workflowExists(_workflowAddress) == true,
+            "Workflow does not exist."
+        );
 
         // console.log("update workflow:", _tokenUri);
         debugMessage = "finalizeJob: update workflow";
@@ -55,12 +61,17 @@ contract Hook is ISPHook, WhitelistMananger, ReentrancyGuard {
         // console.log("_workflowAddress:", _workflowAddress);
 
         // check progress
-        uint256 stepsCount = ISnaptureWorkflow(_workflowAddress).getStepsCount();
-        uint256 progressCount = ISnaptureWorkflow(_workflowAddress).getProgressCount();
+        uint256 stepsCount = ISnaptureWorkflow(_workflowAddress)
+            .getStepsCount();
+        uint256 progressCount = ISnaptureWorkflow(_workflowAddress)
+            .getProgressCount();
         // last progress is Payment
         if (progressCount == (stepsCount - 1)) {
             // mint NFT to owner
-            ISnaptureNFT(nft).mint(ISnaptureWorkflow(_workflowAddress).getOwner(), _tokenUri);
+            ISnaptureNFT(nft).mint(
+                ISnaptureWorkflow(_workflowAddress).getOwner(),
+                _tokenUri
+            );
             // finalize payment
             ISnaptureWorkflow(_workflowAddress).finalizePayment();
         }
@@ -70,7 +81,9 @@ contract Hook is ISPHook, WhitelistMananger, ReentrancyGuard {
         // delete project.jobs[jobId];
     }
 
-    function workflowExists(address _workflowAddress) public view returns (bool) {
+    function workflowExists(
+        address _workflowAddress
+    ) public view returns (bool) {
         for (uint i = 0; i < workflows.length; i++) {
             if (workflows[i] == _workflowAddress) {
                 return true; // Address found
@@ -79,8 +92,8 @@ contract Hook is ISPHook, WhitelistMananger, ReentrancyGuard {
         return false; // Address not found
     }
 
-    function setThreshold(uint256 threshold_) external onlyOwner {
-        threshold = threshold_;
+    function setThreshold(uint256 _threshold) external onlyOwner {
+        threshold = _threshold;
     }
 
     function _checkThreshold(uint256 number) internal view returns (bool) {
@@ -99,9 +112,9 @@ contract Hook is ISPHook, WhitelistMananger, ReentrancyGuard {
             attestationId
         );
 
-        (address workflowAddress, string memory tokenUri) = abi.decode(
+        (string memory tokenUri, address workflowAddress) = abi.decode(
             attestation.data,
-            (address, string)
+            (string, address)
         ); // workflowAddress, tokenUri
 
         // Check if the signer has already attested

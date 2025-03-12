@@ -1,11 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
+import { useContractStore } from '@/store/ContractStore';
 import { createContractBuilder } from '@/components/ContractBuilder';
 import { Button } from '@/components/ui/button';
-import { useContractStore } from '@/store/ContractStore';
-import Link from 'next/link';
+import { Toaster } from '@/components/ui/sonner';
 
 const Snapflow = () => {
   const router = useRouter();
@@ -27,12 +28,7 @@ const Snapflow = () => {
             <div key={contract.id} className='mb-6'>
               <h2 className='font-medium mb-2 text-gray-700'>
                 Contract:{' '}
-                <Link
-                  href={`https://sepolia.scrollscan.com//address/${contract.id}`}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='text-blue-500 underline'
-                >
+                <Link href={`https://sepolia.scrollscan.com//address/${contract.id}`} target='_blank' rel='noopener noreferrer' className='text-blue-500'>
                   {contract.id}
                 </Link>
               </h2>
@@ -45,6 +41,7 @@ const Snapflow = () => {
             <p className='mt-2 text-gray-500'>Create a new contract to get started</p>
           </div>
         )}
+        <Toaster />
       </main>
     </>
   );

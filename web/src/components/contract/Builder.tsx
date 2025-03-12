@@ -5,12 +5,14 @@ import React, { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { v4 as uuidv4 } from 'uuid';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge, BackgroundVariant, Connection, Position } from '@xyflow/react';
 import type { Node, Edge } from '@xyflow/react';
 
 import { useEthersSigner } from '@/app/hooks/useEthersSigner';
 import { useContractStore } from '@/store/ContractStore';
 import { Button } from '@/components/ui/button';
+import { Toaster } from '@/components/ui/sonner';
 import Job from './Job';
 import Payment from './Payment';
 import CustomEdge from './CustomEdge';
@@ -78,6 +80,7 @@ export function Builder() {
       const amount: number = (paymentNode?.data.amount as number) || 0;
       const contractAddress = await createContract(amount);
       addContract({ id: contractAddress!, nodes: contractNodes, edges: contractEdges });
+      toast.success(`Contract has been created successfully`);
       router.push('/contracts');
     } catch (error) {
       console.error('Error creating contract:', error);
@@ -154,6 +157,7 @@ export function Builder() {
           </ReactFlow>
         </div>
       </div>
+      <Toaster />
     </>
   );
 }
