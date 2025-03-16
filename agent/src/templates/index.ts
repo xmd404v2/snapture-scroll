@@ -11,7 +11,7 @@ Respond with a JSON markdown block containing only the extracted values:
 \`\`\`json
 {
     "contractAddress": string,
-    "chain": "ethereum" | "base" | "sepolia" | "bsc" | "arbitrum" | "avalanche" | "polygon" | "optimism" | "scroll"
+    "chain": "ethereum" | "base" | "sepolia" | "bsc" | "arbitrum" | "avalanche" | "polygon" | "optimism" | "scroll" | "scroll-sepolia"
 }
 \`\`\`
 `;
@@ -31,7 +31,7 @@ Respond with a JSON markdown block containing only the extracted values:
 {
     "contractAddress": string,
     "tokenId": string,
-    "chain": "ethereum" | "base" | "sepolia" | "bsc" | "arbitrum" | "avalanche" | "polygon" | "optimism" | "scroll"
+    "chain": "ethereum" | "base" | "sepolia" | "bsc" | "arbitrum" | "avalanche" | "polygon" | "optimism" | "scroll" | "scroll-sepolia"
 }
 \`\`\`
 `;

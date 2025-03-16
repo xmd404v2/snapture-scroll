@@ -14,26 +14,29 @@ import { codeAnalyzeTemplate, contractReadTemplate, nftMetadataTemplate } from '
 export { contractReadTemplate, nftMetadataTemplate };
 
 export class ContractReader {
-  private readonly apiKey: string;
+  private readonly etherScanApiKey: string;
+  private readonly scrollScanApiKey: string;
 
   constructor(private runtime: IAgentRuntime) {
-    this.apiKey = this.runtime.getSetting('ETHERSCAN_API_KEY');
-    if (!this.apiKey) {
-      elizaLogger.warn('Etherscan API key not found in settings');
+    this.etherScanApiKey = this.runtime.getSetting('ETHERSCAN_API_KEY');
+    this.scrollScanApiKey = this.runtime.getSetting('SCROLLSCAN_API_KEY');
+    if (!this.etherScanApiKey || !this.scrollScanApiKey) {
+      elizaLogger.warn('Etherscan API key or Scrollscan API key not found in settings');
     }
   }
 
   async getContractABI(params: ContractReadParams) {
     elizaLogger.info(`Reading contract: ${params.contractAddress} on ${params.chain}`);
-    const baseUrl = this.getEtherscanEndpoint(params.chain);
+    const baseUrl = this.getExplorerEndpoint(params.chain);
+    const apiKey = params.chain === 'scroll' || params.chain === 'scroll-sepolia' ? this.scrollScanApiKey : this.etherScanApiKey;
 
     try {
-      // Get contract ABI from Etherscan
+      // Get contract ABI
       const queryParams = new URLSearchParams({
         module: 'contract',
         action: 'getabi',
         address: params.contractAddress,
-        apikey: this.apiKey,
+        apikey: apiKey,
       });
 
       const response = await fetch(`${baseUrl}/api?${queryParams}`, {
@@ -91,14 +94,15 @@ export class ContractReader {
   }
 
   async getContractInfo(address: string, chain: string) {
-    const baseUrl = this.getEtherscanEndpoint(chain);
+    const baseUrl = this.getExplorerEndpoint(chain);
+    const apiKey = chain === 'scroll' || chain === 'scroll-sepolia' ? this.scrollScanApiKey : this.etherScanApiKey;
 
     try {
       const queryParams = new URLSearchParams({
         module: 'contract',
         action: 'getsourcecode',
         address: address,
-        apikey: this.apiKey,
+        apikey: apiKey,
       });
 
       const response = await fetch(`${baseUrl}/api?${queryParams}`, {
@@ -139,12 +143,12 @@ export class ContractReader {
     }
   }
 
-  private getEtherscanEndpoint(chain: string): string {
+  private getExplorerEndpoint(chain: string): string {
     const endpoints = {
       ethereum: 'https://api.etherscan.io',
       sepolia: 'https://api-sepolia.etherscan.io',
-      scroll: 'https://api.etherscan.io/v2/api?chainid=534352',
-      'scroll-sepolia': 'https://api.etherscan.io/v2/api?chainid=534351',
+      scroll: 'https://api.scrollscan.com',
+      'scroll-sepolia': 'https://api-sepolia.scrollscan.com',
     };
 
     return endpoints[chain] || endpoints['ethereum'];
@@ -168,7 +172,7 @@ const buildContractReadParams = async (state: State, runtime: IAgentRuntime): Pr
 
 export const readContract = {
   name: 'READ_CONTRACT',
-  description: 'Read and analyze a smart contract using Etherscan',
+  description: 'Read and analyze a smart contract using Etherscan or Scrollscan',
   handler: async (runtime: IAgentRuntime, _message: Memory, _state: State, _options: any, callback?: HandlerCallback) => {
     elizaLogger.info('Read contract action handler called');
 
@@ -210,7 +214,7 @@ ${eventsList}
 Logic:
 ${codeLogic}
 
-This contract ${contractData.verified ? 'is verified' : 'is not verified'} on Etherscan.`,
+This contract ${contractData.verified ? 'is verified' : 'is not verified'} on Etherscan/ Scrollscan.`,
           content: contractData,
         });
       }
@@ -229,8 +233,9 @@ This contract ${contractData.verified ? 'is verified' : 'is not verified'} on Et
   },
   template: contractReadTemplate,
   validate: async (runtime: IAgentRuntime) => {
-    const etherscanKey = runtime.getSetting('ETHERSCAN_API_KEY');
-    return typeof etherscanKey === 'string' && etherscanKey.length > 0;
+    const etherScanApiKey = runtime.getSetting('ETHERSCAN_API_KEY');
+    const scrollScanApiKey = runtime.getSetting('SCROLLSCAN_API_KEY');
+    return typeof etherScanApiKey === 'string' && etherScanApiKey.length > 0 && typeof scrollScanApiKey === 'string' && scrollScanApiKey.length > 0;
   },
   examples: [
     [
