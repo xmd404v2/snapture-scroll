@@ -6,12 +6,14 @@ import { NFTMetadataParams } from '../types';
 export class ContractReader {
   private readonly infuraApiKey: string;
   private readonly etherScanApiKey: string;
+  private readonly scrollScanApiKey: string;
 
   constructor(private runtime: IAgentRuntime) {
     this.infuraApiKey = this.runtime.getSetting('INFURA_API_KEY');
     this.etherScanApiKey = this.runtime.getSetting('ETHERSCAN_API_KEY');
-    if (!this.infuraApiKey || !this.etherScanApiKey) {
-      elizaLogger.warn('Infura API key or Etherscan API key not found in settings');
+    this.scrollScanApiKey = this.runtime.getSetting('SCROLLSCAN_API_KEY');
+    if (!this.infuraApiKey || !this.etherScanApiKey || !this.scrollScanApiKey) {
+      elizaLogger.warn('Infura API key/ Etherscan API key/ Scrollscan API key not found in settings');
     }
   }
 
@@ -19,10 +21,11 @@ export class ContractReader {
     elizaLogger.info(`Getting NFT metadata for token ${params.tokenId} at contract ${params.contractAddress} on ${params.chain}`);
 
     const infuraBaseUrl = this.getInfuraEndpoint(params.chain);
-    const etherScanBaseUrl = this.getEtherscanEndpoint(params.chain);
+    const explorerBaseUrl = this.getExplorerEndpoint(params.chain);
     const provider = new ethers.JsonRpcProvider(`${infuraBaseUrl}/${this.infuraApiKey}`);
     const contractAddress = params.contractAddress;
     const tokenId = params.tokenId;
+    const apiKey = params.chain === 'scroll' || params.chain === 'scroll-sepolia' ? this.scrollScanApiKey : this.etherScanApiKey;
 
     try {
       // Check if it's ERC721 or ERC1155
@@ -30,10 +33,10 @@ export class ContractReader {
         module: 'contract',
         action: 'getabi',
         address: params.contractAddress,
-        apikey: this.etherScanApiKey,
+        apikey: apiKey,
       });
 
-      const response = await fetch(`${etherScanBaseUrl}/api?${queryParams}`, {
+      const response = await fetch(`${explorerBaseUrl}/api?${queryParams}`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -102,12 +105,12 @@ export class ContractReader {
     return endpoints[chain] || endpoints['ethereum'];
   }
 
-  private getEtherscanEndpoint(chain: string): string {
+  private getExplorerEndpoint(chain: string): string {
     const endpoints = {
       ethereum: 'https://api.etherscan.io',
       sepolia: 'https://api-sepolia.etherscan.io',
-      scroll: 'https://api.etherscan.io/v2/api?chainid=534352',
-      'scroll-sepolia': 'https://api.etherscan.io/v2/api?chainid=534351',
+      scroll: 'https://api.scrollscan.com',
+      'scroll-sepolia': 'https://api-sepolia.scrollscan.com',
     };
 
     return endpoints[chain] || endpoints['ethereum'];
